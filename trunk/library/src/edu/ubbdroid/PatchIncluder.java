@@ -77,7 +77,7 @@ public abstract class PatchIncluder {
 		 * 
 		 * associate("ABC", new String[] { V_2_1 });
 		 */
-		associate("I44e3c0af", new String[] { V_2_1, V_2_3 });
+		associate("I44e3c0af", new String[] { V_2_1, V_2_2, V_2_3 });
 	}
 
 	/**
