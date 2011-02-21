@@ -16,12 +16,13 @@
  */
 
 ////////////////////////////////////////////////////////////////////////////////
-// Implemented changes compared to Froyo:
+// Implemented changes compared to 2.1, 2.2, 2.3:
 // * Change I44e3c0af: Make disabled TextViews uneditable (issue 2771)
 ////////////////////////////////////////////////////////////////////////////////
 
 package edu.ubbdroid.android.widget;
 
+import edu.ubbdroid.PatchIncluder;
 import android.R;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -37,11 +38,13 @@ import android.view.inputmethod.InputMethodManager;
  */
 
 /**
- * EditText is a thin veneer over TextView that configures itself
- * to be editable.
- *
- * <p>See the <a href="{@docRoot}resources/tutorials/views/hello-formstuff.html">Form Stuff
- * tutorial</a>.</p>
+ * EditText is a thin veneer over TextView that configures itself to be
+ * editable.
+ * 
+ * <p>
+ * See the <a href="{@docRoot}
+ * resources/tutorials/views/hello-formstuff.html">Form Stuff tutorial</a>.
+ * </p>
  * <p>
  * <b>XML attributes</b>
  * <p>
@@ -64,13 +67,16 @@ public class EditText extends android.widget.EditText {
 
 	@Override
 	public void setEnabled(boolean enabled) {
-		if (enabled == isEnabled()) {
-			return;
-		}
+		if (PatchIncluder.includePath("I44e3c0af")) {
+			if (enabled == isEnabled()) {
+				return;
+			}
 
-		if (!enabled) {
-			hideSoftInputWindow();
+			if (!enabled) {
+				hideSoftInputWindow();
+			}
 		}
+		
 		super.setEnabled(enabled);
 	}
 
@@ -85,19 +91,25 @@ public class EditText extends android.widget.EditText {
 
 	@Override
 	public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
-		if (isEnabled()) {
-			return super.onCreateInputConnection(outAttrs);
-		} else {
-			return null;
+		if (PatchIncluder.includePath("I44e3c0af")) {
+			if (isEnabled()) {
+				return super.onCreateInputConnection(outAttrs);
+			} else {
+				return null;
+			}
 		}
+		
+		return super.onCreateInputConnection(outAttrs);
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		boolean onTouch = super.onTouchEvent(event);
-		if (!isEnabled()) {
+		
+		if (PatchIncluder.includePath("I44e3c0af") && !isEnabled()) {
 			hideSoftInputWindow();
 		}
+		
 		return onTouch;
 	}
 
